@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { FileText, Calendar, Trash2, Search, ExternalLink, Loader2, BookOpen } from 'lucide-react';
+import { FileText, Calendar, Trash2, Search, ExternalLink, Loader2, BookOpen, Edit3 } from 'lucide-react';
 
 interface Doc {
     id: string;
@@ -10,7 +10,11 @@ interface Doc {
     created_at: string;
 }
 
-const DocsList: React.FC = () => {
+interface DocsListProps {
+    setActiveView: (view: string) => void;
+}
+
+const DocsList: React.FC<DocsListProps> = ({ setActiveView }) => {
     const [docs, setDocs] = useState<Doc[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -40,22 +44,26 @@ const DocsList: React.FC = () => {
         if (!confirm('Are you sure you want to delete this document?')) return;
 
         try {
-            const { error } = await supabase
+            const { data, error } = await supabase
                 .from('docs')
                 .delete()
-                .eq('id', id);
+                .eq('id', id)
+                .select();
 
             if (error) throw error;
+            if (!data || data.length === 0) {
+                throw new Error("Deletion was blocked by Row Level Security (RLS) policies.");
+            }
             setDocs(docs.filter(doc => doc.id !== id));
         } catch (error: any) {
             console.error('Error deleting doc:', error.message);
-            alert('Failed to delete document: ' + error.message);
+            alert('Failed to delete document: ' + error.message + '\n\nPlease check your Supabase RLS policies.');
         }
     };
 
     const filteredDocs = docs.filter(doc =>
-        doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.category.toLowerCase().includes(searchTerm.toLowerCase())
+        (doc.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (doc.category || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -96,7 +104,7 @@ const DocsList: React.FC = () => {
                                     <FileText size={20} />
                                 </div>
                                 <span className={`px-2 py-1 rounded-lg text-[10px] font-bold bg-white/5 text-zinc-400`}>
-                                    {doc.category}
+                                    {doc.category || 'General'}
                                 </span>
                             </div>
 
@@ -118,7 +126,14 @@ const DocsList: React.FC = () => {
                                     >
                                         <Trash2 size={16} />
                                     </button>
-                                    <button className="p-2 hover:bg-amber-400/10 hover:text-amber-400 rounded-lg text-zinc-500 transition-all">
+                                    <button
+                                        onClick={() => setActiveView(`edit-doc:${doc.id}`)}
+                                        className="p-2 hover:bg-amber-400/10 hover:text-amber-400 rounded-lg text-zinc-500 transition-all"
+                                        title="Edit document"
+                                    >
+                                        <Edit3 size={16} />
+                                    </button>
+                                    <button className="p-2 hover:bg-blue-400/10 hover:text-blue-400 rounded-lg text-zinc-500 transition-all">
                                         <ExternalLink size={16} />
                                     </button>
                                 </div>

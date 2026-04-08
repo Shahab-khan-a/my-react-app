@@ -11,9 +11,10 @@ import {
 
 interface NavbarProps {
     toggleSidebar: () => void;
+    onLogout?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
+const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, onLogout }) => {
     return (
         <header className="h-16 border-b border-white/5 bg-[#09090b]/50 backdrop-blur-xl sticky top-0 z-30 flex items-center justify-between px-4 md:px-8">
             <div className="flex items-center gap-4">
@@ -49,7 +50,12 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar }) => {
 
                 <div className="h-8 w-px bg-white/10 mx-1 hidden sm:block"></div>
 
-                <button className="flex items-center gap-3 pl-2 pr-1 py-1 hover:bg-white/5 rounded-xl transition-all border border-transparent hover:border-white/10 group">
+                <button
+                    onClick={() => {
+                        if (onLogout) onLogout();
+                    }}
+                    className="flex items-center gap-3 pl-2 pr-1 py-1 hover:bg-white/5 rounded-xl transition-all border border-transparent hover:border-white/10 group"
+                >
                     <div className="items-end hidden sm:flex flex-col">
                         <span className="text-sm font-medium text-zinc-200">Admin User</span>
                         <span className="text-[10px] text-zinc-500">Super Admin</span>

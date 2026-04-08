@@ -14,13 +14,18 @@ function App() {
       return <DocViewer docId={docId} />;
     }
 
+    if (activeView.startsWith('edit-doc:')) {
+      const docId = activeView.split(':')[1];
+      return <DocsEditor id={docId} onSave={() => setActiveView('docs-list')} />;
+    }
+
     switch (activeView) {
       case 'dashboard':
         return <Dashboard />;
       case 'docs-editor':
-        return <DocsEditor />;
+        return <DocsEditor onSave={() => setActiveView('docs-list')} />;
       case 'docs-list':
-        return <DocsList />;
+        return <DocsList setActiveView={setActiveView} />;
       default:
         return <Dashboard />;
     }
@@ -30,7 +35,7 @@ function App() {
     <AdminLayout activeView={activeView} setActiveView={setActiveView}>
       {renderView()}
     </AdminLayout>
-  )
+  );
 }
 
 export default App

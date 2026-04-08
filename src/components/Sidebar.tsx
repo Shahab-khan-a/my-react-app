@@ -6,7 +6,8 @@ import {
     ChevronLeft,
     Sparkles,
     Book,
-    ChevronRight
+    ChevronRight,
+
 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 

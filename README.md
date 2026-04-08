@@ -71,3 +71,99 @@ export default defineConfig([
   },
 ])
 ```
+
+---
+
+## Firebase deployment
+
+This project now uses Firebase for authentication. The configuration lives in `src/lib/firebase.ts`, and the login form will sign in with your Firebase project's credentials.
+
+1. Make sure you have a user created in the Firebase console matching the admin email and password you intend to use (e.g. `shahabhan2005@gmail.com` / `shahab`).
+2. Install and log in with the Firebase CLI if you haven't:
+
+```sh
+npm install -g firebase-tools
+firebase login
+```
+
+3. Initialize hosting (if not already done):
+
+```sh
+firebase init hosting
+# when asked for the "public" directory, point it to the build output (usually "dist" for Vite)
+# you can also skip initialization and create the config manually; example below:
+```
+
+An example `firebase.json` might look like:
+
+```json
+{
+  "hosting": {
+    "site": "app-technext96-5804d",
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}
+```
+
+Make sure the `site` field matches your Firebase Hosting site ID (e.g. `app-technext96-5804d`).
+
+### Firebase configuration in the app
+
+The project already includes a central Firebase helper at `src/lib/firebase.ts` that
+defines and initializes the SDK using the following configuration (replace these
+values if you switch projects):
+
+```ts
+// src/lib/firebase.ts
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCpa9qT7RNUO-HhCPj9yI6syAaE8FnoTYA",
+  authDomain: "app-technext96.firebaseapp.com",
+  projectId: "app-technext96",
+  storageBucket: "app-technext96.firebasestorage.app",
+  messagingSenderId: "502156100653",
+  appId: "1:502156100653:web:5cd495616057c0d69b24a4"
+};
+
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+```
+
+All other parts of the app import from this file (`import { auth } from './lib/firebase'`).
+If you add Firestore, Storage, or other products, simply extend this helper and re‑export
+the corresponding clients:
+
+```ts
+import { getFirestore } from 'firebase/firestore';
+export const db = getFirestore(app);
+```
+
+For security you may eventually want to move these values into `import.meta.env`
+variables so they are not committed to source control; the hard‑coded version works for
+a quick demo but is not recommended for production.
+
+Having the configuration centralized is what "fix it in all app" means – every
+module uses the same initialized instance, so updating one file updates the entire
+application.
+
+4. Build and deploy:
+
+```sh
+npm run build
+firebase deploy
+```
+
+Login state persists via Firebase's auth session, so after deployment the admin panel will require a valid account.
+
+---
+

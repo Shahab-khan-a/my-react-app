@@ -6,9 +6,10 @@ interface AdminLayoutProps {
     children: React.ReactNode;
     activeView: string;
     setActiveView: (view: string) => void;
+    onLogout?: () => void;
 }
 
-const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeView, setActiveView }) => {
+const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeView, setActiveView, onLogout }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const toggleSidebar = () => {
@@ -28,7 +29,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeView, setActi
             {/* Main Content Area */}
             <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
                 {/* Navbar */}
-                <Navbar toggleSidebar={toggleSidebar} />
+                <Navbar toggleSidebar={toggleSidebar} onLogout={onLogout} />
 
                 {/* Dynamic Content */}
                 <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">

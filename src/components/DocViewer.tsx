@@ -51,7 +51,7 @@ const DocViewer: React.FC<DocViewerProps> = ({ docId }) => {
     };
 
     const renderContent = (content: string) => {
-        // Simple markdown parsing logic similar to DocsEditor preview
+        if (!content) return <p className="text-zinc-500 italic">This document has no content yet.</p>;
         const blocks = content.split('\n\n');
         return blocks.map((block, index) => {
             if (block.startsWith('## ')) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Save,
     Trash2,
@@ -27,7 +27,12 @@ interface Block {
     value: string;
 }
 
-const DocsEditor: React.FC = () => {
+interface DocsEditorProps {
+    id?: string;
+    onSave?: () => void;
+}
+
+const DocsEditor: React.FC<DocsEditorProps> = ({ id, onSave }) => {
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('General');
     const [blocks, setBlocks] = useState<Block[]>([
@@ -35,7 +40,119 @@ const DocsEditor: React.FC = () => {
     ]);
     const [isPreview, setIsPreview] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+    useEffect(() => {
+        if (id) {
+            fetchDocument();
+        }
+    }, [id]);
+
+    const fetchDocument = async () => {
+        setIsLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('docs')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (error) throw error;
+
+            if (data) {
+                setTitle(data.title);
+                setCategory(data.category);
+                setBlocks(parseMarkdownToBlocks(data.content));
+            }
+        } catch (error: any) {
+            console.error('Error fetching document:', error.message);
+            alert('Failed to load document content');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const parseMarkdownToBlocks = (content: string): Block[] => {
+        if (!content) return [{ id: crypto.randomUUID(), type: 'text', value: '' }];
+
+        const result: Block[] = [];
+        // Split by lines to parse sequentially
+        const lines = content.split('\n');
+        let currentTextBlockLines: string[] = [];
+        let isInCodeBlock = false;
+        let currentCodeBlockLines: string[] = [];
+
+        const flushTextBlock = () => {
+            if (currentTextBlockLines.length > 0) {
+                const textValue = currentTextBlockLines.join('\n').trim();
+                if (textValue) {
+                    result.push({
+                        id: crypto.randomUUID(),
+                        type: 'text',
+                        value: textValue
+                    });
+                }
+                currentTextBlockLines = [];
+            }
+        };
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            // Code Block Toggle
+            if (line.trim().startsWith('```')) {
+                if (isInCodeBlock) {
+                    // Closing code block
+                    result.push({
+                        id: crypto.randomUUID(),
+                        type: 'code',
+                        value: currentCodeBlockLines.join('\n').trim()
+                    });
+                    currentCodeBlockLines = [];
+                    isInCodeBlock = false;
+                } else {
+                    // Opening code block after finishing any text
+                    flushTextBlock();
+                    isInCodeBlock = true;
+                }
+                continue;
+            }
+
+            if (isInCodeBlock) {
+                currentCodeBlockLines.push(line);
+                continue;
+            }
+
+            // Title Handling
+            if (line.startsWith('## ')) {
+                flushTextBlock();
+                result.push({
+                    id: crypto.randomUUID(),
+                    type: 'title',
+                    value: line.replace('## ', '').trim()
+                });
+                continue;
+            }
+
+            // Empty lines separate logical text chunks if significant
+            if (line.trim() === '') {
+                // We keep track of groups of text but allow double newlines to split blocks
+                if (currentTextBlockLines.length > 0) {
+                    currentTextBlockLines.push(line);
+                }
+                continue;
+            }
+
+            // Normal text
+            currentTextBlockLines.push(line);
+        }
+
+        // Final flush
+        flushTextBlock();
+
+        return result.length > 0 ? result : [{ id: crypto.randomUUID(), type: 'text', value: '' }];
+    };
 
     const categories = ['Getting Started', 'Components', 'API Reference', 'Hooks', 'Theming'];
 
@@ -91,20 +208,39 @@ const DocsEditor: React.FC = () => {
         }).join('\n\n');
 
         try {
-            const { error } = await supabase
-                .from('docs')
-                .insert([
-                    { title, content, category, status: 'published' }
-                ]);
-
-            if (error) throw error;
+            if (id) {
+                // Update existing
+                const { error, status } = await supabase
+                    .from('docs')
+                    .update({ title, content, category, status: 'published' })
+                    .eq('id', id);
+                
+                if (error) {
+                    console.error('Supabase Update Error:', error);
+                    alert(`Failed to update: ${error.message} (Status: ${status})`);
+                    throw error;
+                }
+            } else {
+                // Insert new
+                const { error } = await supabase
+                    .from('docs')
+                    .insert([
+                        { title, content, category, status: 'published' }
+                    ]);
+                if (error) {
+                    console.error('Supabase Insert Error:', error);
+                    alert(`Failed to insert: ${error.message}`);
+                    throw error;
+                }
+            }
 
             setSaveStatus('success');
-            setTitle('');
-            setBlocks([{ id: crypto.randomUUID(), type: 'text', value: '' }]);
-            setTimeout(() => setSaveStatus('idle'), 3000);
+            setTimeout(() => {
+                setSaveStatus('idle');
+                if (onSave) onSave();
+            }, 1000);
         } catch (error: any) {
-            console.error('Error saving document:', error.message);
+            console.error('Error in handleSave:', error);
             setSaveStatus('error');
             setTimeout(() => setSaveStatus('idle'), 5000);
         } finally {
@@ -119,9 +255,9 @@ const DocsEditor: React.FC = () => {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
                         <Book className="text-amber-400" size={32} />
-                        Add Documentation
+                        {id ? 'Edit Documentation' : 'Add Documentation'}
                     </h1>
-                    <p className="text-zinc-500 mt-1">Create high-quality dynamic guides.</p>
+                    <p className="text-zinc-500 mt-1">{id ? 'Modify existing guide.' : 'Create high-quality dynamic guides.'}</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button
@@ -159,8 +295,14 @@ const DocsEditor: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Main Editor Section */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="p-8 rounded-3xl bg-[#121214] border border-white/5 shadow-2xl space-y-8">
-                        {/* Title Input */}
+                    {isLoading ? (
+                        <div className="p-20 rounded-3xl bg-[#121214] border border-white/5 flex flex-col items-center justify-center gap-4">
+                            <Loader2 className="animate-spin text-amber-400" size={48} />
+                            <p className="text-zinc-400 font-medium">Loading document content...</p>
+                        </div>
+                    ) : (
+                        <div className="p-8 rounded-3xl bg-[#121214] border border-white/5 shadow-2xl space-y-8">
+                            {/* Title Input */}
                         <div className="space-y-2">
                             <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
                                 <FileText size={14} /> Document Title
@@ -269,7 +411,8 @@ const DocsEditor: React.FC = () => {
                             )}
                         </div>
                     </div>
-                </div>
+                )}
+            </div>
 
                 {/* Sidebar / Settings Section */}
                 <div className="space-y-6">

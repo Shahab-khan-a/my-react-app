@@ -18,10 +18,13 @@ const Dashboard: React.FC = () => {
         const fetchDashboardData = async () => {
             setIsLoading(true);
             try {
+                console.log('Fetching dashboard data...');
                 // Fetch Total Docs
                 const { count, error: countError } = await supabase
                     .from('docs')
                     .select('*', { count: 'exact', head: true });
+
+                console.log('Count result:', { count, countError });
 
                 if (countError) throw countError;
 
@@ -34,6 +37,8 @@ const Dashboard: React.FC = () => {
                     .select('title, created_at')
                     .order('created_at', { ascending: false })
                     .limit(5);
+
+                console.log('Latest docs result:', { latestDocs, docsError });
 
                 if (docsError) throw docsError;
                 setRecentDocs(latestDocs || []);
