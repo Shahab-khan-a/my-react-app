@@ -16,7 +16,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, onLogout }) => {
     return (
-        <header className="h-16 border-b border-white/5 bg-[#09090b]/50 backdrop-blur-xl sticky top-0 z-30 flex items-center justify-between px-4 md:px-8">
+        <header className="h-16 border-b border-[#1e293b] bg-[#02060c]/80 backdrop-blur-xl sticky top-0 z-30 flex items-center justify-between px-4 md:px-8">
             <div className="flex items-center gap-4">
                 <button
                     onClick={toggleSidebar}
@@ -44,8 +44,8 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, onLogout }) => {
                 </button>
 
                 <button className="p-2 hover:bg-white/5 rounded-lg transition-colors relative">
-                    <Bell size={20} className="text-zinc-400" />
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-amber-500 rounded-full border-2 border-[#09090b]"></span>
+                    <Bell size={20} className="text-slate-400" />
+                    <span className="absolute top-2 right-2 w-2 h-2 bg-[#00d1ff] rounded-full border-2 border-[#02060c]"></span>
                 </button>
 
                 <div className="h-8 w-px bg-white/10 mx-1 hidden sm:block"></div>
@@ -60,7 +60,7 @@ const Navbar: React.FC<NavbarProps> = ({ toggleSidebar, onLogout }) => {
                         <span className="text-sm font-medium text-zinc-200">Admin User</span>
                         <span className="text-[10px] text-zinc-500">Super Admin</span>
                     </div>
-                    <div className="w-8 h-8 rounded-lg bg-linear-to-br from-amber-400 to-orange-500 flex items-center justify-center text-black font-bold shadow-lg shadow-amber-500/10">
+                    <div className="w-8 h-8 rounded-lg bg-linear-to-br from-[#00d1ff] to-[#00b8d4] flex items-center justify-center text-black font-bold shadow-lg shadow-[#00d1ff]/10">
                         <User size={18} />
                     </div>
                     <ChevronDown size={14} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />

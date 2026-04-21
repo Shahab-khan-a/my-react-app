@@ -71,7 +71,7 @@ const DocsList: React.FC<DocsListProps> = ({ setActiveView }) => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-                        <BookOpen className="text-amber-400" size={32} />
+                        <BookOpen className="text-[#00d1ff]" size={32} />
                         Your Documentation
                     </h1>
                     <p className="text-zinc-500 mt-1">Manage and view all your published guide and documentation.</p>
@@ -83,24 +83,24 @@ const DocsList: React.FC<DocsListProps> = ({ setActiveView }) => {
                         placeholder="Search documentation..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-[#121214] border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-sm text-white focus:border-amber-400/50 outline-none transition-all"
+                        className="w-full bg-[#0c1524] border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-sm text-white focus:border-[#00d1ff]/50 outline-none transition-all"
                     />
                 </div>
             </div>
 
             {isLoading ? (
-                <div className="h-64 flex flex-col items-center justify-center text-zinc-500 gap-4">
-                    <Loader2 className="animate-spin text-amber-400" size={40} />
+                <div className="h-64 flex flex-col items-center justify-center text-slate-400 gap-4">
+                    <Loader2 className="animate-spin text-[#00d1ff]" size={40} />
                     <p className="text-sm font-medium">Fetching documentation from Supabase...</p>
                 </div>
             ) : filteredDocs.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredDocs.map((doc) => (
-                        <div key={doc.id} className="p-6 rounded-3xl bg-[#121214] border border-white/5 hover:border-amber-400/20 transition-all group relative overflow-hidden flex flex-col">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400/5 blur-3xl rounded-full -mr-12 -mt-12 group-hover:bg-amber-400/10 transition-colors"></div>
+                        <div key={doc.id} className="p-6 rounded-3xl bg-[#0c1524] border border-white/5 hover:border-[#00d1ff]/20 transition-all group relative overflow-hidden flex flex-col">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-[#00d1ff]/5 blur-3xl rounded-full -mr-12 -mt-12 group-hover:bg-[#00d1ff]/10 transition-colors"></div>
 
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="p-2 rounded-xl bg-amber-400/10 text-amber-400">
+                                <div className="p-2 rounded-xl bg-[#00d1ff]/10 text-[#00d1ff]">
                                     <FileText size={20} />
                                 </div>
                                 <span className={`px-2 py-1 rounded-lg text-[10px] font-bold bg-white/5 text-zinc-400`}>
@@ -109,7 +109,7 @@ const DocsList: React.FC<DocsListProps> = ({ setActiveView }) => {
                             </div>
 
                             <h3 className="text-lg font-bold text-white mb-2 line-clamp-2">{doc.title}</h3>
-                            <p className="text-sm text-zinc-500 mb-6 line-clamp-3 flex-1">{doc.content}</p>
+                            <p className="text-sm text-zinc-500 mb-6 line-clamp-3 flex-1">{doc.content.replace(/<[^>]*>/g, '').trim()}</p>
 
                             <div className="flex items-center justify-between pt-6 border-t border-white/5">
                                 <div className="flex items-center gap-2 text-zinc-600">
@@ -128,7 +128,7 @@ const DocsList: React.FC<DocsListProps> = ({ setActiveView }) => {
                                     </button>
                                     <button
                                         onClick={() => setActiveView(`edit-doc:${doc.id}`)}
-                                        className="p-2 hover:bg-amber-400/10 hover:text-amber-400 rounded-lg text-zinc-500 transition-all"
+                                        className="p-2 hover:bg-[#00d1ff]/10 hover:text-[#00d1ff] rounded-lg text-slate-500 transition-all"
                                         title="Edit document"
                                     >
                                         <Edit3 size={16} />
@@ -142,8 +142,8 @@ const DocsList: React.FC<DocsListProps> = ({ setActiveView }) => {
                     ))}
                 </div>
             ) : (
-                <div className="h-64 rounded-3xl bg-[#121214] border border-dashed border-white/10 flex flex-col items-center justify-center text-center p-8">
-                    <div className="w-16 h-16 rounded-full bg-zinc-800/50 flex items-center justify-center text-zinc-700 mb-4">
+                <div className="h-64 rounded-3xl bg-[#0c1524] border border-dashed border-white/10 flex flex-col items-center justify-center text-center p-8">
+                    <div className="w-16 h-16 rounded-full bg-[#1e293b] flex items-center justify-center text-slate-400 mb-4">
                         <BookOpen size={30} />
                     </div>
                     <h3 className="text-lg font-bold text-white mb-2">No Documentation Found</h3>

@@ -11,19 +11,19 @@ function App() {
   const renderView = () => {
     if (activeView.startsWith('doc:')) {
       const docId = activeView.split(':')[1];
-      return <DocViewer docId={docId} />;
+      return <DocViewer docId={docId} onBack={() => setActiveView('docs-list')} />;
     }
 
     if (activeView.startsWith('edit-doc:')) {
       const docId = activeView.split(':')[1];
-      return <DocsEditor id={docId} onSave={() => setActiveView('docs-list')} />;
+      return <DocsEditor id={docId} onSave={() => setActiveView('docs-list')} onBack={() => setActiveView('docs-list')} />;
     }
 
     switch (activeView) {
       case 'dashboard':
         return <Dashboard />;
       case 'docs-editor':
-        return <DocsEditor onSave={() => setActiveView('docs-list')} />;
+        return <DocsEditor onSave={() => setActiveView('docs-list')} onBack={() => setActiveView('dashboard')} />;
       case 'docs-list':
         return <DocsList setActiveView={setActiveView} />;
       default:

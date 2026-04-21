@@ -17,7 +17,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeView, setActi
     };
 
     return (
-        <div className="flex h-screen bg-[#09090b] text-white overflow-hidden font-sans">
+        <div className="flex h-screen bg-[#02060c] text-white overflow-hidden font-sans">
             {/* Sidebar */}
             <Sidebar
                 isOpen={isSidebarOpen}

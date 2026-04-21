@@ -72,19 +72,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, activeView, se
 
     return (
         <aside className={`
-      relative h-full bg-[#09090b] border-r border-white/5 flex flex-col transition-all duration-300 ease-in-out z-40
+      relative h-full bg-[#02060c] border-r border-[#1e293b] flex flex-col transition-all duration-300 ease-in-out z-40
       ${isOpen ? 'w-64' : 'w-20'}
       fixed md:relative ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
     `}>
             {/* Brand Logo */}
             <div className="h-16 flex items-center justify-between px-6 border-b border-white/5">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-400 flex items-center justify-center text-black font-black text-lg shadow-lg shadow-amber-400/20">
-                        S
+                    <div className="w-8 h-8 rounded-lg bg-[#00d1ff] flex items-center justify-center text-black font-black text-lg shadow-lg shadow-[#00d1ff]/20">
+                        T
                     </div>
                     {isOpen && (
                         <span className="font-bold text-lg tracking-tight whitespace-nowrap">
-                            Dev<span className="text-amber-400">Doc</span>
+                            Tech<span className="text-[#00d1ff]">Next</span>
                         </span>
                     )}
                 </div>
@@ -111,11 +111,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, activeView, se
                                 className={`
                   w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group
                   ${isActive
-                                        ? 'bg-amber-400/10 text-amber-400 shadow-[inset_0_0_0_1px_rgba(251,191,36,0.1)]'
-                                        : 'text-zinc-500 hover:text-white hover:bg-white/5'}
+                                        ? 'bg-[#00d1ff]/10 text-[#00d1ff] shadow-[inset_0_0_0_1px_rgba(0,209,255,0.1)]'
+                                        : 'text-slate-400 hover:text-white hover:bg-white/5'}
                 `}
                             >
-                                <item.icon size={20} className={isActive ? 'text-amber-400' : 'group-hover:scale-110 transition-transform'} />
+                                <item.icon size={20} className={isActive ? 'text-[#00d1ff]' : 'group-hover:scale-110 transition-transform'} />
                                 {isOpen && <span className="text-sm font-medium">{item.label}</span>}
                             </button>
                         );
@@ -127,7 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, activeView, se
                     <div className="space-y-1">
                         <div className="px-3 mb-2 flex items-center justify-between">
                             {isOpen && <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Documentation</p>}
-                            {isOpen && <div className="w-1 h-1 rounded-full bg-amber-400 animate-pulse"></div>}
+                            {isOpen && <div className="w-1 h-1 rounded-full bg-[#00d1ff] animate-pulse"></div>}
                         </div>
                         {docs.map((doc) => {
                             const docId = `doc:${doc.id}`;
@@ -139,17 +139,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, activeView, se
                                     className={`
                     w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all group
                     ${isActive
-                                            ? 'text-amber-400 bg-amber-400/5'
-                                            : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'}
+                                            ? 'text-[#00d1ff] bg-[#00d1ff]/5'
+                                            : 'text-slate-400 hover:text-zinc-300 hover:bg-white/5'}
                   `}
                                 >
-                                    <Book size={16} className={isActive ? 'text-amber-400' : 'text-zinc-700 group-hover:text-zinc-500 group-hover:scale-110 transition-all'} />
+                                    <Book size={16} className={isActive ? 'text-[#00d1ff]' : 'text-slate-600 group-hover:text-slate-400 group-hover:scale-110 transition-all'} />
                                     {isOpen && (
                                         <span className="text-xs font-medium truncate flex-1 text-left">
                                             {doc.title}
                                         </span>
                                     )}
-                                    {isOpen && isActive && <ChevronRight size={12} className="text-amber-400" />}
+                                    {isOpen && isActive && <ChevronRight size={12} className="text-[#00d1ff]" />}
                                 </button>
                             );
                         })}

@@ -61,14 +61,14 @@ const Dashboard: React.FC = () => {
                     <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
                         Dashboard
                     </h1>
-                    <p className="text-zinc-500 mt-1">Welcome back, here's what's happening today.</p>
+                    <p className="text-slate-400 mt-1">Welcome back, here's what's happening today.</p>
                 </div>
             </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 {stats.map((stat, index) => (
-                    <div key={index} className="p-6 rounded-2xl bg-[#121214] border border-white/5 hover:border-white/10 transition-all group relative overflow-hidden">
+                    <div key={index} className="p-6 rounded-2xl bg-[#0c1524] border border-white/5 hover:border-[#00d1ff]/20 transition-all group relative overflow-hidden">
                         <div className="flex items-center justify-between mb-4">
                             <div className={`p-2 rounded-lg bg-white/5 ${stat.color}`}>
                                 <stat.icon size={20} />
@@ -86,9 +86,9 @@ const Dashboard: React.FC = () => {
 
             {/* Content Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-3 p-6 rounded-2xl bg-[#121214] border border-white/5 min-h-100 flex flex-col">
+                <div className="lg:col-span-3 p-6 rounded-2xl bg-[#0c1524] border border-white/5 min-h-100 flex flex-col">
                     <h3 className="font-bold text-lg mb-6 text-white flex items-center gap-2">
-                        <Activity size={20} className="text-amber-400" />
+                        <Activity size={20} className="text-[#00d1ff]" />
                         Recent Activity
                     </h3>
                     <div className="flex-1 space-y-6 overflow-y-auto pr-2 custom-scrollbar">
@@ -99,7 +99,7 @@ const Dashboard: React.FC = () => {
                         ) : recentDocs.length > 0 ? (
                             recentDocs.map((doc, idx) => (
                                 <div key={idx} className="flex gap-4 p-4 rounded-xl bg-white/2 border border-white/5 hover:bg-white/4 transition-colors">
-                                    <div className="w-10 h-10 rounded-full bg-amber-400/10 flex items-center justify-center text-amber-400 shrink-0 border border-amber-400/20">
+                                    <div className="w-10 h-10 rounded-full bg-[#00d1ff]/10 flex items-center justify-center text-[#00d1ff] shrink-0 border border-[#00d1ff]/20">
                                         <FileText size={18} />
                                     </div>
                                     <div className="flex-1 overflow-hidden">
